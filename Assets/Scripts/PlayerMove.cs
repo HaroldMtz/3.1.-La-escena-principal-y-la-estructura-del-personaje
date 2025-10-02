@@ -43,7 +43,7 @@ public class PlayerMove : MonoBehaviour
     // Buffers de entrada por frame
     private bool jumpPressed;
 
-    // Hashes de parámetros (más rápido/seguro que strings)
+    // Hashes de parámetros
     private static readonly int HashSpeed       = Animator.StringToHash("Speed");
     private static readonly int HashIsJumping   = Animator.StringToHash("IsJumping");
     private static readonly int HashIsAttacking = Animator.StringToHash("IsAttacking");
@@ -53,6 +53,10 @@ public class PlayerMove : MonoBehaviour
         rb   = GetComponent<Rigidbody2D>();
         anim = GetComponentInChildren<Animator>();       // en "Graphics"
         sr   = GetComponentInChildren<SpriteRenderer>(); // en "Graphics"
+
+        // Recomendado para 2D
+        rb.freezeRotation = true;
+        if (rb.gravityScale <= 0f) rb.gravityScale = 3f;
     }
 
     void Update()
