@@ -1,17 +1,27 @@
 using UnityEngine;
 
+[RequireComponent(typeof(Rigidbody2D))]
+[RequireComponent(typeof(Collider2D))]
 public class Bullet : MonoBehaviour
 {
-    public float speed = 10f;
-    public Vector2 direction;
+    public float speed = 12f;
+    public float lifeTime = 3f;
 
-    void Update()
+    Rigidbody2D rb;
+
+    void Awake()
     {
-        transform.Translate(direction * speed * Time.deltaTime);
+        rb = GetComponent<Rigidbody2D>();
+        rb.gravityScale = 0f;
+        rb.collisionDetectionMode = CollisionDetectionMode2D.Continuous;
+        rb.interpolation = RigidbodyInterpolation2D.Interpolate;
     }
 
-    private void OnBecameInvisible()
+    public void Init(Vector2 dir)
     {
-        Destroy(gameObject);
+        rb.linearVelocity = dir.normalized * speed;
+        Destroy(gameObject, lifeTime);
     }
+
+    void OnBecameInvisible() => Destroy(gameObject);
 }

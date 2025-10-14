@@ -2,35 +2,60 @@ using UnityEngine;
 
 public class PlayerShoot : MonoBehaviour
 {
-    public GameObject bulletPrefab;
-    public Transform firePoint;
+    [Header("Prefabs")]
+    public GameObject bulletStraightPrefab; // J -> Bullet.prefab
+    public GameObject bulletArcPrefab;      // K -> BulletArc.prefab
 
-    private SpriteRenderer sr;
+    [Header("Referencias")]
+    public Transform firePoint;             // hijo frente a la mano/arma
+    public Animator animator;               // Animator del hijo "Graphics" (opcional)
+    public string shootTriggerName = "Attack";
+
+    [Header("Cadencia")]
+    public float cooldown = 0.16f;
+    float nextFire;
+
+    SpriteRenderer sr; // del hijo Graphics
 
     void Awake()
     {
-        // Busca el SpriteRenderer en el hijo "Graphics"
         sr = GetComponentInChildren<SpriteRenderer>();
+        if (!animator) animator = GetComponentInChildren<Animator>();
     }
 
     void Update()
     {
-        // Dispara con J o K
-        if (Input.GetKeyDown(KeyCode.J) || Input.GetKeyDown(KeyCode.K))
-        {
-            Shoot();
-        }
+        if (Time.time < nextFire) return;
+
+        if (Input.GetKeyDown(KeyCode.J)) Fire(bulletStraightPrefab, Mode.Straight);
+        else if (Input.GetKeyDown(KeyCode.K)) Fire(bulletArcPrefab, Mode.Arc);
     }
 
-    void Shoot()
-    {
-        GameObject bullet = Instantiate(bulletPrefab, firePoint.position, Quaternion.identity);
-        Bullet bulletScript = bullet.GetComponent<Bullet>();
+    enum Mode { Straight, Arc }
 
-        // Dirección depende del flipX del SpriteRenderer
-        if (sr != null && sr.flipX)
-            bulletScript.direction = Vector2.left;
-        else
-            bulletScript.direction = Vector2.right;
+    void Fire(GameObject prefab, Mode mode)
+    {
+        if (!prefab || !firePoint) return;
+
+        nextFire = Time.time + cooldown;
+
+        var go = Instantiate(prefab, firePoint.position, Quaternion.identity);
+
+        // Dirección según hacia dónde mira tu sprite (flipX) o la escala
+        bool facingRight = (sr != null) ? !sr.flipX : (transform.localScale.x >= 0f);
+        Vector2 dir = facingRight ? Vector2.right : Vector2.left;
+
+        switch (mode)
+        {
+            case Mode.Straight:
+                go.GetComponent<Bullet>()?.Init(dir);
+                break;
+            case Mode.Arc:
+                go.GetComponent<BulletArc>()?.Init(dir);
+                break;
+        }
+
+        if (animator && !string.IsNullOrEmpty(shootTriggerName))
+            animator.SetTrigger(shootTriggerName);
     }
 }
