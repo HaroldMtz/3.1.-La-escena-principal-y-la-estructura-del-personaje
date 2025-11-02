@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1015646672997",
+    "project_id": "videojuego2d-9d230",
+    "storage_bucket": "videojuego2d-9d230.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1015646672997:android:7969623873f9626f988e8c",
+        "android_client_info": {
+          "package_name": "com.harold.videojuego2d"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAKUQaoOMrMG1QSCJ-tREsM6apypbgraxw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
